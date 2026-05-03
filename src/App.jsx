@@ -7,15 +7,15 @@ import AboutUs from "./components/Aboutus"
 import DoctorLogin from "./components/DoctorLogin"
 import DoctorDashboard from "./components/DoctorDashboard"
 
-// Protected route component
+// Protected route component for doctor dashboard
 const ProtectedRoute = ({ children }) => {
   const isAuth = localStorage.getItem('doctorAuth') === 'true'
-  return isAuth ? children : <Navigate to="/doctor-login" />
+  return isAuth ? children : <Navigate to="/doctor-login" replace />
 }
 
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-teal-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -28,6 +28,8 @@ function App() {
         } />
         <Route path="/help" element={<Help />} />
         <Route path="/aboutus" element={<AboutUs />} />
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
   )

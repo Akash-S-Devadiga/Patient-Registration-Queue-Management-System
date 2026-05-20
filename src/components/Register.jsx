@@ -3,7 +3,8 @@ import { DataContext } from '../context/Datacontext'
 
 const Register = () => {
   const { value1, setvalue1, value2, setvalue2, total, settotal } = useContext(DataContext)
-
+  const DataStore = JSON.parse(localStorage.getItem("PatientData")) || [];
+   localStorage.setItem("PatientData",JSON.stringify(DataStore))
   const submithandler = (e) => {
     e.preventDefault();
     if (value1.trim() === "" || value2.trim() === "") {
@@ -15,10 +16,15 @@ const Register = () => {
       Phone: value2,
       timestamp: new Date().toLocaleTimeString()
     }
+  
+   
+    DataStore.push(tottall);
+    localStorage.setItem("PatientData",JSON.stringify(DataStore))
+
     settotal(prev => [...prev, tottall])
     setvalue1("")
     setvalue2("")
-  }
+  };
 
   return (
     <div className="container-medical py-12">
@@ -88,20 +94,20 @@ const Register = () => {
               <h3 className="text-3xl font-bold text-slate-900">Patient Queue</h3>
             </div>
             <p className="text-slate-600 text-lg mb-6">
-              {total.length === 0 
+              {DataStore.length === 0 
                 ? "No patients registered yet. Be the first!" 
-                : `${total.length} patient${total.length !== 1 ? 's' : ''} waiting`}
+                : `${DataStore.length} patient${DataStore.length !== 1 ? 's' : ''} waiting`}
             </p>
 
             {/* Queue List */}
             <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-              {total.length === 0 ? (
+              {DataStore.length === 0 ? (
                 <div className="medical-card p-8 text-center">
                   <p className="text-6xl mb-4">🏥</p>
                   <p className="text-slate-600 text-lg">No registrations yet</p>
                 </div>
               ) : (
-                total.map((data, idx) => {
+                DataStore.map((data, idx) => {
                   const isNext = idx === 0; // First patient in queue
                   
                   return (
@@ -138,15 +144,15 @@ const Register = () => {
             </div>
 
             {/* Queue Stats */}
-            {total.length > 0 && (
+            {DataStore.length > 0 && (
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="medical-card p-4 text-center">
-                  <p className="text-3xl font-bold text-blue-600">{total.length}</p>
+                  <p className="text-3xl font-bold text-blue-600">{DataStore.length}</p>
                   <p className="text-sm text-slate-600">Total Patients</p>
                 </div>
                 <div className="medical-card p-4 text-center">
                   <p className="text-3xl font-bold text-emerald-600">1</p>
-                  <p className="text-sm text-slate-600">Ahead: {total.length - 1}</p>
+                  <p className="text-sm text-slate-600">Ahead: {DataStore.length - 1}</p>
                 </div>
               </div>
             )}

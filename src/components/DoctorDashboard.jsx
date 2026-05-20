@@ -11,12 +11,16 @@ const DoctorDashboard = () => {
     navigate('/doctor-login')
   }
 
-  const deletePatient = (indexToDelete) => {
-    settotal(prev => prev.filter((_, idx) => idx !== indexToDelete))
-  }
+  // const deletePatient = (indexToDelete) => {
+  //   settotal(prev => prev.filter((_, idx) => idx !== indexToDelete))
+  // }
 
-  const markAsProcessing = (indexToDelete) => {
-    deletePatient(indexToDelete)
+  const markAsProcessing = () => {
+
+   const currentData = JSON.parse(localStorage.getItem("PatientData")) || [];
+   const updatedData = currentData.slice(1); // Remove the first patient (current)
+    localStorage.setItem("PatientData", JSON.stringify(updatedData))
+    settotal(updatedData)
   }
 
   return (
@@ -44,15 +48,15 @@ const DoctorDashboard = () => {
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div className="medical-card p-6 text-center">
-              <p className="text-4xl font-bold text-blue-600">{total.length}</p>
+              <p className="text-4xl font-bold text-blue-600">{JSON.parse(localStorage.getItem("PatientData") || "[]").length}</p>
               <p className="text-slate-600 mt-2">Total Patients</p>
             </div>
             <div className="medical-card p-6 text-center">
-              <p className="text-4xl font-bold text-emerald-600">{Math.max(0, total.length - 1)}</p>
+              <p className="text-4xl font-bold text-emerald-600">{Math.max(0, JSON.parse(localStorage.getItem("PatientData") || "[]").length - 1)}</p>
               <p className="text-slate-600 mt-2">Waiting</p>
             </div>
             <div className="medical-card p-6 text-center">
-              <p className="text-4xl font-bold text-orange-600">{total.length > 0 ? 1 : 0}</p>
+              <p className="text-4xl font-bold text-orange-600">{JSON.parse(localStorage.getItem("PatientData") || "[]").length > 0 ? 1 : 0}</p>
               <p className="text-slate-600 mt-2">In Queue</p>
             </div>
             <div className="medical-card p-6 text-center">
@@ -64,7 +68,7 @@ const DoctorDashboard = () => {
 
         {/* Queue Section */}
         <div className="fade-in-up" style={{ animationDelay: '0.2s' }}>
-          {total.length === 0 ? (
+          {JSON.parse(localStorage.getItem("PatientData") || "[]").length === 0 ? (
             <div className="medical-card p-12 text-center border-2 border-dashed border-slate-300">
               <p className="text-6xl mb-4">✅</p>
               <p className="text-2xl font-semibold text-slate-600 mb-2">All Patients Processed!</p>
@@ -73,7 +77,7 @@ const DoctorDashboard = () => {
           ) : (
             <div className="space-y-4">
               {/* Current Patient (Next in Queue) */}
-              {total.length > 0 && (
+              {JSON.parse(localStorage.getItem("PatientData") || "[]").length > 0 && (
                 <div className="next-patient-card">
                   <div className="next-patient-badge">NOW SERVING</div>
                   <div className="flex items-start justify-between gap-6">
@@ -102,11 +106,11 @@ const DoctorDashboard = () => {
               )}
 
               {/* Remaining Queue */}
-              {total.length > 1 && (
+              {JSON.parse(localStorage.getItem("PatientData") || "[]").length > 1 && (
                 <div>
                   <h3 className="text-xl font-bold text-slate-800 mb-4 mt-8">Waiting Queue</h3>
                   <div className="grid gap-3 max-h-96 overflow-y-auto">
-                    {total.slice(1).map((patient, idx) => (
+                    {JSON.parse(localStorage.getItem("PatientData") || "[]").slice(1).map((patient, idx) => (
                       <div 
                         key={idx + 1} 
                         className="medical-card p-6 hover:shadow-lg border-2 border-slate-200 flex justify-between items-center group"
